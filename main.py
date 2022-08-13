@@ -45,7 +45,7 @@ layout = [  [sg.Text('Gophish Settings:')],
             [sg.Button('Send Email')]] 
 
 
-window = sg.Window('Gophish Quick Campaign v0.1.0', layout)    
+window = sg.Window('Mail Helper GUI v0.1.0', layout)    
 
 
 while True:
@@ -54,12 +54,16 @@ while True:
         break
     if event == 'Send Email':
         try:
+            window['Send Email'].update('Sending...')
+            window['Send Email'].update(disabled=True)
             email_content = tp.get_rendered_html(open(values['IT_ET']).read(), tp.get_config_dict(values['IT_ETRC']))
             gophish = Gophish(api_key=values['IT_GAPIKEY'], host=values['IT_GHOST'])
             send_profile = SendEmailProfile(values['IT_SN'], values['IT_SEA'], values['IT_SUBJECT'], values['IT_RFN'],
                 values['IT_RLN'], values['IT_REA'], email_content, values['IT_SMTPHOST'],  values['CB_ICE'])
-            sg.popup('Sending...')
             em.send_email(gophish, send_profile)
+            window['Send Email'].update(disabled=False)
+            window['Send Email'].update('Send Email')
+            sg.popup('Email Sent!', title='Sucess')
             gophish_settings['gophish_api_key'] = values['IT_GAPIKEY']
             gophish_settings['gophish_host'] = values['IT_GHOST']
             gophish_settings['smtp_host'] = values['IT_SMTPHOST']
@@ -67,5 +71,7 @@ while True:
             with open(gophish_setting_config_file, 'w') as f:
                 f.write(json.dumps(gophish_settings, indent=4))
         except:
-            sg.popup('Error! Please check your inputs and try again.')
+            sg.popup('Error! Please check your configs and inputs then try again.', title='Error')
+            window['Send Email'].update(disabled=False)
+            window['Send Email'].update('Send Email')
 window.close()

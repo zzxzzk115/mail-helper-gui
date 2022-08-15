@@ -1,0 +1,3 @@
+RecipientName,Tony
+SenderName,XY University
+Link,https://receive.parchment-doc.com/delivery?token=d77c1bcc-2159-4a90-a294-51b90cc933c6-14&email=f%40g.com

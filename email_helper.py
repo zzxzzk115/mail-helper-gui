@@ -6,7 +6,7 @@ from gophish.models import Group, User, SMTP, Template, Page, Campaign
 class SendEmailProfile:
     def __init__(self, sender_name : str, sender_email : str, subject : str, 
             recipient_first_name : str, recipient_last_name : str, recipient_email : str,
-            email_content: str, smtp_host : str, smtp_ignore_cert_errors : bool) -> None:
+            email_content: str, smtp_host : str, smtp_user_name : str, smtp_user_password : str, smtp_ignore_cert_errors : bool) -> None:
         self.sender_name = sender_name
         self.sender_email = sender_email
         self.subject = subject
@@ -15,6 +15,8 @@ class SendEmailProfile:
         self.recipient_email = recipient_email
         self.email_content = email_content
         self.smtp_host = smtp_host
+        self.smtp_user_name = smtp_user_name
+        self.smtp_user_password = smtp_user_password
         self.smtp_ignore_cert_errors = smtp_ignore_cert_errors
 
 
@@ -31,6 +33,8 @@ def send_email(gophish : Gophish, profile : SendEmailProfile) -> bool:
         new_sending_profile.from_address = profile.sender_email
     new_sending_profile.interface_type = 'SMTP'
     new_sending_profile.ignore_cert_errors = profile.smtp_ignore_cert_errors
+    new_sending_profile.username = profile.smtp_user_name
+    new_sending_profile.password = profile.smtp_user_password
     gophish.smtp.post(new_sending_profile)
 
     # Create a new Group

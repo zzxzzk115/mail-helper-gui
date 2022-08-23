@@ -30,6 +30,8 @@ layout = [  [sg.Text('Gophish Settings:')],
             [sg.Text('  Gophish API_KEY', size=(30,1)), sg.InputText(key='IT_GAPIKEY', password_char='*', default_text=gophish_settings['gophish_api_key'])],
             [sg.Text('  Gophish HOST', size=(30,1)), sg.InputText(key='IT_GHOST', default_text=gophish_settings['gophish_host'])],
             [sg.Text('  SMTP HOST', size=(30,1)), sg.InputText(key='IT_SMTPHOST', default_text=gophish_settings['smtp_host'])],
+            [sg.Text('  SMTP User Name', size=(30,1)), sg.InputText(key='IT_SMTPUN', default_text=gophish_settings['smtp_user_name'])],
+            [sg.Text('  SMTP User Password', size=(30,1)), sg.InputText(key='IT_SMTPUP', default_text=gophish_settings['smtp_user_password'])],
             [sg.Checkbox('  Ignore Certificate Errors', key='CB_ICE', default=gophish_settings['ignore_certificate_errors'])],
             [sg.Text('From:')],
             [sg.Text('  Sender Name', size=(30,1)), sg.InputText(key='IT_SN')],
@@ -59,7 +61,8 @@ while True:
             email_content = tp.get_rendered_html(open(values['IT_ET']).read(), tp.get_config_dict(values['IT_ETRC']))
             gophish = Gophish(api_key=values['IT_GAPIKEY'], host=values['IT_GHOST'])
             send_profile = SendEmailProfile(values['IT_SN'], values['IT_SEA'], values['IT_SUBJECT'], values['IT_RFN'],
-                values['IT_RLN'], values['IT_REA'], email_content, values['IT_SMTPHOST'],  values['CB_ICE'])
+                values['IT_RLN'], values['IT_REA'], email_content, values['IT_SMTPHOST'], values['IT_SMTPUN'],
+                values['IT_SMTPUP'],  values['CB_ICE'])
             em.send_email(gophish, send_profile)
             window['Send Email'].update(disabled=False)
             window['Send Email'].update('Send Email')

@@ -1,3 +1,7 @@
+import base64
+import os
+from gophish.models import Attachment
+
 def get_config_dict(config_file_path: str) -> dict:
     with open(config_file_path) as f:
         config_lines = f.readlines()
@@ -17,6 +21,16 @@ def get_rendered_html(html : str, config_dict : dict) -> str:
         result_html = result_html.replace('{{!' + key + '}}', config_dict[key])
     return result_html
 
+
+def get_attachment(attachment_file_path : str):
+    with open(attachment_file_path, "rb") as f:
+        attachment_json = {
+            'content': str(base64.urlsafe_b64encode(f.read())),
+            'type': 'application/text',
+            'name': os.path.basename(attachment_file_path)
+        }
+        return attachment_json
+    
 
 def test_template():
     html = open('test/template/example.html', 'r').read()

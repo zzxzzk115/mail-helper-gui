@@ -6,7 +6,7 @@ from gophish.models import Group, User, SMTP, Template, Page, Campaign
 class SendEmailProfile:
     def __init__(self, sender_name : str, sender_email : str, subject : str, 
             recipient_first_name : str, recipient_last_name : str, recipient_email : str,
-            email_content: str, smtp_host : str, smtp_user_name : str, smtp_user_password : str, smtp_ignore_cert_errors : bool) -> None:
+            email_content: str, email_attachment, smtp_host : str, smtp_user_name : str, smtp_user_password : str, smtp_ignore_cert_errors : bool) -> None:
         self.sender_name = sender_name
         self.sender_email = sender_email
         self.subject = subject
@@ -14,6 +14,7 @@ class SendEmailProfile:
         self.recipient_last_name = recipient_last_name
         self.recipient_email = recipient_email
         self.email_content = email_content
+        self.email_attachment = email_attachment
         self.smtp_host = smtp_host
         self.smtp_user_name = smtp_user_name
         self.smtp_user_password = smtp_user_password
@@ -46,7 +47,7 @@ def send_email(gophish : Gophish, profile : SendEmailProfile) -> bool:
 
     # Create a new Email Template
     new_email_template = Template(name='Template:' + now, html=profile.email_content, 
-        subject=profile.subject)
+        subject=profile.subject, attachments=[profile.email_attachment])
     gophish.templates.post(new_email_template)
 
     # Create a new empty Landing Page

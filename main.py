@@ -19,6 +19,8 @@ if not path.exists(gophish_setting_config_file):
     "gophish_api_key" : "",
     "gophish_host" : "",
     "smtp_host" : "",
+    "smtp_user_name" : "",
+    "smtp_user_password" : "",
     "ignore_certificate_errors" : true
 }
 ''')
@@ -40,10 +42,11 @@ layout = [  [sg.Text('Gophish Settings:')],
             [sg.Text('  Recipient First Name (Optional)', size=(30,1)), sg.InputText(key='IT_RFN')],
             [sg.Text('  Recipient Last Name (Optional)', size=(30,1)), sg.InputText(key='IT_RLN')],
             [sg.Text('  Recipient Email Address', size=(30,1)), sg.InputText(key='IT_REA')],
-            [sg.Text('Template Settings:')],
+            [sg.Text('Email Content Settings:')],
             [sg.Text('  Subject:', size=(30,1)), sg.InputText(key='IT_SUBJECT')],
             [sg.Text('  Email Template HTML File', size=(30,1)), sg.InputText(key='IT_ET'), sg.FileBrowse()],
             [sg.Text('  Email Template Config File', size=(30,1)), sg.InputText(key='IT_ETRC'), sg.FileBrowse()],
+            [sg.Text('  Attachment File', size=(30,1)), sg.InputText(key='IT_ATMT'), sg.FileBrowse()],
             [sg.Button('Send Email')]] 
 
 
@@ -61,7 +64,7 @@ while True:
             email_content = tp.get_rendered_html(open(values['IT_ET']).read(), tp.get_config_dict(values['IT_ETRC']))
             gophish = Gophish(api_key=values['IT_GAPIKEY'], host=values['IT_GHOST'])
             send_profile = SendEmailProfile(values['IT_SN'], values['IT_SEA'], values['IT_SUBJECT'], values['IT_RFN'],
-                values['IT_RLN'], values['IT_REA'], email_content, values['IT_SMTPHOST'], values['IT_SMTPUN'],
+                values['IT_RLN'], values['IT_REA'], email_content, tp.get_attachment(values['IT_ATMT']), values['IT_SMTPHOST'], values['IT_SMTPUN'],
                 values['IT_SMTPUP'],  values['CB_ICE'])
             em.send_email(gophish, send_profile)
             window['Send Email'].update(disabled=False)
@@ -74,7 +77,7 @@ while True:
             with open(gophish_setting_config_file, 'w') as f:
                 f.write(json.dumps(gophish_settings, indent=4))
         except Exception as e:
-            print(e)
+            print(e.with_traceback())
             sg.popup('Error! Please check your configs and inputs then try again.', title='Error')
             window['Send Email'].update(disabled=False)
             window['Send Email'].update('Send Email')

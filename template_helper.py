@@ -1,6 +1,7 @@
 import base64
 import os
-from gophish.models import Attachment
+import mimetypes
+from urllib.request import pathname2url
 
 def get_config_dict(config_file_path: str) -> dict:
     with open(config_file_path) as f:
@@ -25,10 +26,11 @@ def get_rendered_html(html : str, config_dict : dict) -> str:
 def get_attachment(attachment_file_path : str):
     with open(attachment_file_path, "rb") as f:
         attachment_json = {
-            'content': str(base64.urlsafe_b64encode(f.read())),
-            'type': 'application/text',
+            'content': base64.standard_b64encode(f.read()).decode('utf-8'),
+            'type': mimetypes.guess_type(pathname2url(attachment_file_path))[0],
             'name': os.path.basename(attachment_file_path)
         }
+        print(attachment_json)
         return attachment_json
     
 

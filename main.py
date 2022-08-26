@@ -77,7 +77,7 @@ while True:
             with open(gophish_setting_config_file, 'w') as f:
                 f.write(json.dumps(gophish_settings, indent=4))
         except Exception as e:
-            print(e.with_traceback())
+            print(e)
             sg.popup('Error! Please check your configs and inputs then try again.', title='Error')
             window['Send Email'].update(disabled=False)
             window['Send Email'].update('Send Email')

@@ -1,6 +1,7 @@
 from datetime import datetime
 from gophish import Gophish
 from gophish.models import Group, User, SMTP, Template, Page, Campaign
+import threading
 
 
 class SendEmailProfile:
@@ -21,7 +22,12 @@ class SendEmailProfile:
         self.smtp_ignore_cert_errors = smtp_ignore_cert_errors
 
 
-def send_email(gophish : Gophish, profile : SendEmailProfile) -> bool:
+def send_email(gophish : Gophish, profile : SendEmailProfile, callback):
+    t = threading.Thread(target=_send_email_proc, args=(gophish, profile, callback))
+    t.start()
+
+
+def _send_email_proc(gophish : Gophish, profile : SendEmailProfile, callback):
     # Get Date time now
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -58,3 +64,4 @@ def send_email(gophish : Gophish, profile : SendEmailProfile) -> bool:
     new_campaign = Campaign(name='Campaign:' + now, groups=[new_group], page=new_landing_page,
         template=new_email_template, smtp=new_sending_profile)
     gophish.campaigns.post(new_campaign)
+    callback()

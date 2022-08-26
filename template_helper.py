@@ -4,16 +4,17 @@ import mimetypes
 from urllib.request import pathname2url
 
 def get_config_dict(config_file_path: str) -> dict:
+    config_dict = {}
     with open(config_file_path) as f:
         config_lines = f.readlines()
-        config_dict = {}
         for line in config_lines:
             clean_line = line.strip('\n')
             splitted_line = clean_line.split(',')
-            config_item_key = splitted_line[0]
-            config_item_value = splitted_line[1]
-            config_dict[config_item_key] = config_item_value
-        return config_dict
+            if len(splitted_line) >= 2:
+                config_item_key = splitted_line[0]
+                config_item_value = splitted_line[1]
+                config_dict[config_item_key] = config_item_value
+    return config_dict    
 
 
 def get_rendered_html(html : str, config_dict : dict) -> str:

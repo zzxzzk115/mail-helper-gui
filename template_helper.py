@@ -47,7 +47,7 @@ def get_attachment(attachment_file_path : str):
 
 def test_template():
     html = open('test/template/example.html', 'r').read()
-    config_dict = get_config_dict('test/template/example_config.txt')
+    config_dict = _get_config_dict('test/template/example_config.txt')
     rendered_html = get_rendered_html(html, config_dict)
     print('Rendered Template HTML:\n')
     print(rendered_html)

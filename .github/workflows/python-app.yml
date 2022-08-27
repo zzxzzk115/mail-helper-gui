@@ -35,7 +35,10 @@ jobs:
     - name: Package with pyinstaller
       run: |
         pyinstaller -F main.py -n "MailHelperGUI"
-
+    - uses: actions/upload-artifact@v3
+      with:
+        name: MailHelperGUI_Windows
+        path: ${{ github.workspace }}/dist/MailHelperGUI.exe
 
   build-macos:
 
@@ -61,7 +64,10 @@ jobs:
     - name: Package with pyinstaller
       run: |
         pyinstaller -F main.py -n "MailHelperGUI"
-
+    - uses: actions/upload-artifact@v3
+      with:
+        name: MailHelperGUI_MacOS
+        path: ${{ github.workspace }}/dist/MailHelperGUI
 
   upload-release:
     needs: [build-windows, build-macos]
@@ -69,6 +75,12 @@ jobs:
     runs-on: windows-latest
     
     steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: MailHelperGUI_Windows
+    - uses: actions/download-artifact@v3
+      with:
+        name: MailHelperGUI_MacOS
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -86,7 +98,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/dist/MailHelperGUI.exe
+        asset_path: ${{ github.workspace }}/MailHelperGUI.exe
         asset_name: MailHelperGUI_${{ github.ref }}_Windows.exe
         asset_content_type: application/exe
     - name: Upload MacOS Release Asset
@@ -96,6 +108,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/dist/MailHelperGUI
+        asset_path: ${{ github.workspace }}/MailHelperGUI
         asset_name: MailHelperGUI_${{ github.ref }}_MacOS
         asset_content_type: application/exe

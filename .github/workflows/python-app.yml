@@ -55,7 +55,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest pyinstaller
-        ./${{ github.workspace }}/setup_macos_env.sh
+        bash ${{ github.workspace }}/setup_macos_env.sh
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
@@ -65,7 +65,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Package with pyinstaller
       run: |
-        ./${{ github.workspace }}/build_macos.sh
+        bash ${{ github.workspace }}/build_macos.sh
     - uses: actions/upload-artifact@v3
       with:
         name: MailHelperGUI_MacOS

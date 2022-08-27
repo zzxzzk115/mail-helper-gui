@@ -1,1 +1,1 @@
-pyinstaller -F --name "MailHelperGUI" --icon="MailHelperGUI.png" main.py 
+pyinstaller -F --name "MailHelperGUI" --icon="MailHelperGUI.ico" main.py 

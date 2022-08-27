@@ -9,7 +9,7 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  build-windows:
 
     runs-on: windows-latest
 
@@ -54,7 +54,7 @@ jobs:
         asset_name: MailHelperGUI_${{ github.ref }}_Windows.exe
         asset_content_type: application/exe
   
-  build:
+  build-macos:
 
     runs-on: macOS-latest
 

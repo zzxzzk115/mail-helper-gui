@@ -80,7 +80,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload Windows Release Asset
-      id: upload-release-asset
+      id: upload-release-asset-windows
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
         asset_name: MailHelperGUI_${{ github.ref }}_Windows.exe
         asset_content_type: application/exe
     - name: Upload MacOS Release Asset
-      id: upload-release-asset
+      id: upload-release-asset-macos
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

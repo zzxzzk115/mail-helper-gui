@@ -28,40 +28,48 @@ def send_email(gophish : Gophish, profile : SendEmailProfile, callback):
 
 
 def _send_email_proc(gophish : Gophish, profile : SendEmailProfile, callback):
-    # Get Date time now
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    try:
+        # Get Date time now
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # Create a new Sending Profile
-    new_sending_profile = SMTP(name='SMTP:' + now)
-    new_sending_profile.host = profile.smtp_host
-    if profile.sender_name:
-        new_sending_profile.from_address = profile.sender_name + ' <' + profile.sender_email + '>'
-    else:
-        new_sending_profile.from_address = profile.sender_email
-    new_sending_profile.interface_type = 'SMTP'
-    new_sending_profile.ignore_cert_errors = profile.smtp_ignore_cert_errors
-    new_sending_profile.username = profile.smtp_user_name
-    new_sending_profile.password = profile.smtp_user_password
-    gophish.smtp.post(new_sending_profile)
+        # Create a new Sending Profile
+        new_sending_profile = SMTP(name='SMTP:' + now)
+        new_sending_profile.host = profile.smtp_host
+        if profile.sender_name:
+            new_sending_profile.from_address = profile.sender_name + ' <' + profile.sender_email + '>'
+        else:
+            new_sending_profile.from_address = profile.sender_email
+        new_sending_profile.interface_type = 'SMTP'
+        new_sending_profile.ignore_cert_errors = profile.smtp_ignore_cert_errors
+        new_sending_profile.username = profile.smtp_user_name
+        new_sending_profile.password = profile.smtp_user_password
+        gophish.smtp.post(new_sending_profile)
 
-    # Create a new Group
-    new_group = Group(name='Group:' + now, 
-                        targets=[User(first_name=profile.recipient_first_name, 
-                                        last_name=profile.recipient_last_name,
-                                        email=profile.recipient_email)])
-    gophish.groups.post(new_group)
+        # Create a new Group
+        new_group = Group(name='Group:' + now, 
+                            targets=[User(first_name=profile.recipient_first_name, 
+                                            last_name=profile.recipient_last_name,
+                                            email=profile.recipient_email)])
+        gophish.groups.post(new_group)
 
-    # Create a new Email Template
-    new_email_template = Template(name='Template:' + now, html=profile.email_content, 
-        subject=profile.subject, attachments=[profile.email_attachment])
-    gophish.templates.post(new_email_template)
+        # Create a new Email Template
+        attachments = []
+        if profile.email_attachment:
+            attachments.append(profile.email_attachment)
+        if profile.email_content == '':
+            profile.email_content = ' '
+        new_email_template = Template(name='Template:' + now, html=profile.email_content, 
+            subject=profile.subject, attachments=attachments)
+        gophish.templates.post(new_email_template)
 
-    # Create a new empty Landing Page
-    new_landing_page = Page(name='Page:' + now, html='')
-    gophish.pages.post(new_landing_page)
+        # Create a new empty Landing Page
+        new_landing_page = Page(name='Page:' + now, html='')
+        gophish.pages.post(new_landing_page)
 
-    # Create a new Campaign and schedule it
-    new_campaign = Campaign(name='Campaign:' + now, groups=[new_group], page=new_landing_page,
-        template=new_email_template, smtp=new_sending_profile)
-    gophish.campaigns.post(new_campaign)
-    callback()
+        # Create a new Campaign and schedule it
+        new_campaign = Campaign(name='Campaign:' + now, groups=[new_group], page=new_landing_page,
+            template=new_email_template, smtp=new_sending_profile)
+        gophish.campaigns.post(new_campaign)
+        callback({'sent':True, 'msg': 'Sucess'})
+    except Exception as e:
+        callback({'sent':False, 'msg': str(e)})

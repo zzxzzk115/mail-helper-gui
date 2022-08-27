@@ -3,8 +3,11 @@ import os
 import mimetypes
 from urllib.request import pathname2url
 
-def get_config_dict(config_file_path: str) -> dict:
+
+def _get_config_dict(config_file_path: str) -> dict:
     config_dict = {}
+    if not os.path.exists(config_file_path):
+        return config_dict
     with open(config_file_path) as f:
         config_lines = f.readlines()
         for line in config_lines:
@@ -17,14 +20,21 @@ def get_config_dict(config_file_path: str) -> dict:
     return config_dict    
 
 
-def get_rendered_html(html : str, config_dict : dict) -> str:
-    result_html = html
-    for key in config_dict:
-        result_html = result_html.replace('{{!' + key + '}}', config_dict[key])
+def get_rendered_html(html_file_path : str, config_dict_file_path : str) -> str:
+    result_html = ''
+    if not os.path.exists(html_file_path):
+        return result_html
+    with open(html_file_path) as f:
+        result_html = f.read()
+        config_dict = _get_config_dict(config_dict_file_path)
+        for key in config_dict:
+            result_html = result_html.replace('{{!' + key + '}}', config_dict[key])
     return result_html
 
 
 def get_attachment(attachment_file_path : str):
+    if not os.path.exists(attachment_file_path):
+        return None
     with open(attachment_file_path, "rb") as f:
         attachment_json = {
             'content': base64.standard_b64encode(f.read()).decode('utf-8'),

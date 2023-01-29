@@ -46,7 +46,7 @@ layout = [  [sg.Text('Gophish Settings:')],
             [sg.Text('  Subject:', size=(30,1)), sg.InputText(key='IT_SUBJECT')],
             [sg.Text('  Email Template HTML File', size=(30,1)), sg.InputText(key='IT_ET'), sg.FileBrowse()],
             [sg.Text('  Email Template Config File', size=(30,1)), sg.InputText(key='IT_ETRC'), sg.FileBrowse()],
-            [sg.Text('  Attachment File', size=(30,1)), sg.InputText(key='IT_ATMT'), sg.FileBrowse()],
+            [sg.Text('  Attachment File (Optional)', size=(30,1)), sg.InputText(key='IT_ATMT'), sg.FileBrowse()],
             [sg.Button('Send Email')]] 
 
 

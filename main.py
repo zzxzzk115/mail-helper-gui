@@ -72,7 +72,7 @@ while True:
             em.send_email(gophish, send_profile, email_proc_callback)
         except Exception as e:
             print(e)
-            sg.popup('Error! Please check your configs and inputs then try again.', title='Error')
+            sg.popup('Error! Please check your configs and inputs then try again. Error: ' + str(e), title='Error')
             window['Send Email'].update(disabled=False)
             window['Send Email'].update('Send Email')
     if event == 'email_sent':
@@ -88,6 +88,7 @@ while True:
                 f.write(json.dumps(gophish_settings, indent=4))
             sg.popup('Email Sent!', title=result['msg'])
         else:
-            print('Error: ' + result['msg'])
-            sg.popup('Email Sent Failed! Please check your configs and inputs then try again.', title='Error')
+            err = result['msg']
+            print(err)
+            sg.popup('Email Sent Failed! Please check your configs and inputs then try again. Error: ' + err, title='Error')
 window.close()

@@ -50,7 +50,7 @@ layout = [  [sg.Text('Gophish Settings:')],
             [sg.Button('Send Email')]] 
 
 
-window = sg.Window('Mail Helper GUI v0.1.3', layout)    
+window = sg.Window('Mail Helper GUI v0.1.4', layout)    
 
 
 def email_proc_callback(state):
